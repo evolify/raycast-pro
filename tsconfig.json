@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "esnext",
+    "module": "Node16",
     "rootDir": "./",
     "baseUrl": ".",
     "jsx": "preserve",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "noImplicitAny": true,
     "sourceMap": true,
     "declaration": true,

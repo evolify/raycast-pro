@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +11,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "next": "^14.1.0"
+    "@types/node": "^20.11.24",
+    "next": "^14.1.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.2.1"
   }
 }

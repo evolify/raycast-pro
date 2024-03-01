@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import { GEMINI_MODELS } from "common/config"
+import { DEFAULT_GEMINI_MODELS, GEMINI_MODELS } from "../../common/config.js"
 
 export default async (_req: NextApiRequest, res: NextApiResponse) => {
+  console.log("--- get models from vercel ---")
   res.status(200).json({
-    default_models: GEMINI_MODELS,
+    default_models: DEFAULT_GEMINI_MODELS,
     models: GEMINI_MODELS
   })
 }

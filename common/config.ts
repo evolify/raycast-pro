@@ -9,3 +9,10 @@ export const GEMINI_MODELS= [
     features: ['chat', 'quick_ai', 'commands', 'api'],
   },
 ]
+
+export const DEFAULT_GEMINI_MODELS = {
+  chat: 'gemini-pro',
+  quick_ai: 'gemini-pro',
+  commands: 'gemini-pro',
+  api: 'gemini-pros',
+}
