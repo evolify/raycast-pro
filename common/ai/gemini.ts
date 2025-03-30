@@ -1,4 +1,6 @@
 import {
+  GenerateContentResult,
+  GenerateContentStreamResult,
   GoogleGenerativeAI,
   HarmBlockThreshold,
   HarmCategory,
@@ -8,6 +10,9 @@ const { API_KEY } = process.env
 
 const genAI = new GoogleGenerativeAI(API_KEY)
 const model = genAI.getGenerativeModel({ model: "gemini-pro" })
+
+const encoder = new TextEncoder()
+const decoder = new TextDecoder("utf-8")
 
 interface RequestBody {
   additional_system_instructions: string
@@ -24,7 +29,9 @@ interface RequestBody {
   }>
 }
 
-export async function chat(body: RequestBody) {
+function send(body: RequestBody): Promise<GenerateContentResult>
+function send(body: RequestBody, stream: boolean): Promise<GenerateContentStreamResult>
+async function send(body: RequestBody, stream = false) {
   let system_message = ""
   const google_message = []
   let temperature = 0.5
@@ -57,7 +64,6 @@ export async function chat(body: RequestBody) {
     // if there is a message, and it's not the first message
     google_message[0].parts = `${system_message}\n\n${google_message[0].parts}`
   }
-  // const result = await model.generateContentStream(system_message)
   const chat = model.startChat({
     history: google_message,
     generationConfig: {
@@ -80,5 +86,33 @@ export async function chat(body: RequestBody) {
       },
     ],
   })
-  return await chat.sendMessageStream(msg)
+  if(stream){
+    return chat.sendMessageStream(msg)
+  }
+  return chat.sendMessage(msg)
+}
+
+export async function chat(body: RequestBody) {
+  const res = await send(body)
+  return res.response.text()
+}
+
+export async function chatStream(body: RequestBody){
+  const res = await send(body, true)
+
+  const readable = new ReadableStream({
+    async start(controller) {
+      for await(const data of res.stream){
+        controller.enqueue(
+          encoder.encode(`data: ${
+            JSON.stringify({
+              text: data.text()
+            })
+          }\n\n`)
+        )  
+      }
+      controller.close()
+    },
+  })
+  return readable
 }
