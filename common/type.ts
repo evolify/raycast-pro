@@ -13,3 +13,10 @@ export interface RequestBody {
     author: "user" | "assistant"
   }>
 }
+
+export interface TranslateParams {
+  source: string
+  q: string
+  target: string
+  format: string
+}

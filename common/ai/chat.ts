@@ -1,5 +1,5 @@
 import { GEMINI_MODELS } from "../config.js"
-import { RequestBody } from "../type.js"
+import { RequestBody, TranslateParams } from "../type.js"
 import * as gemini from "./gemini.js"
 import * as groq from "./groq.js"
 
@@ -17,4 +17,8 @@ export function chatStream(body: RequestBody){
     return gemini.chatStream(body)
   }
   return groq.chatStream(body)
+}
+
+export function translate(body: TranslateParams) {
+  return groq.translate(body)
 }

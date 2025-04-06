@@ -1,5 +1,5 @@
 import { ChatCompletion } from "groq-sdk/src/resources/chat/index.js"
-import { RequestBody } from "../type.js"
+import { RequestBody, TranslateParams } from "../type.js"
 import Groq from "groq-sdk"
 import { ChatCompletionChunk } from "groq-sdk/lib/chat_completions_ext.mjs"
 import { Stream } from "groq-sdk/lib/streaming.mjs"
@@ -16,7 +16,10 @@ const groq = new Groq({
 })
 
 function send(body: RequestBody): Promise<ChatCompletion>
-function send(body: RequestBody, stream: boolean): Promise<Stream<ChatCompletionChunk>>
+function send(
+  body: RequestBody,
+  stream: boolean
+): Promise<Stream<ChatCompletionChunk>>
 async function send(body: RequestBody, stream = false) {
   const msgs = []
   const { temperature = 0.5, model = DEFAULT_MODEL, messages } = body
@@ -51,16 +54,16 @@ async function send(body: RequestBody, stream = false) {
     messages: msgs,
     model,
     temperature,
-    stream
+    stream,
   })
 }
 
-export async function chat(body: RequestBody){
+export async function chat(body: RequestBody) {
   const res = await send(body)
   return res.choices[0].message.content
 }
 
-export async function chatStream(body: RequestBody){
+export async function chatStream(body: RequestBody) {
   const res = await send(body, true)
   const reader = res.toReadableStream().getReader()
 
@@ -73,7 +76,8 @@ export async function chatStream(body: RequestBody){
           finish = true
           controller.close()
         } else {
-          const { delta, finish_reason } = JSON.parse(decoder.decode(value)).choices[0]
+          const { delta, finish_reason } = JSON.parse(decoder.decode(value))
+            .choices[0]
           let data: { text?: string; finish_reason?: string } = {}
           if (delta.content !== undefined) {
             data.text = delta.content
@@ -90,4 +94,23 @@ export async function chatStream(body: RequestBody){
     },
   })
   return readable
+}
+
+const TRANSLATION_MODEL = "llama3-70b-8192"
+
+export async function translate(body: TranslateParams) {
+  const { q, target } = body
+  const messages = [
+    {
+      role: "system",
+      content: `Translate the following text to ${target}, give me the result only:`,
+    },
+    { role: "user", content: q },
+  ]
+  const res = await groq.chat.completions.create({
+    messages,
+    model: TRANSLATION_MODEL,
+    temperature: 0.5
+  })
+  return res.choices[0].message.content
 }

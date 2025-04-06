@@ -75,17 +75,20 @@ export const DEFAULT_GEMINI_MODELS = {
   quick_ai: "gemini-pro",
   commands: "gemini-pro",
   api: "gemini-pros",
+  emoji_search: "gemini-pro",
+  tools: "gemini-pro",
 }
 
 export const DEFAULT_GREQ_MODELS = {
   chat: "deepseek-r1-distill-qwen-32b",
   quick_ai: "deepseek-r1-distill-qwen-32b",
-  commands: "deepseek-r1-distill-qwen-32b",
   api: "deepseek-r1-distill-qwen-32b",
+  commands: "deepseek-r1-distill-qwen-32b",
+  emoji_search: "deepseek-r1-distill-qwen-32b",
+  tools: "deepseek-r1-distill-qwen-32b",
 }
 
 export const MODELS = GROQ_MODELS.concat(GEMINI_MODELS)
-
 
 export const DEFAULT_MODELS = DEFAULT_GREQ_MODELS
 
